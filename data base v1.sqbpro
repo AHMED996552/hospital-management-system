@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="p1.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2024"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="patients" custom_title="0" dock_id="1" table="4,8:mainpatients"/><dock_state state="000000ff00000000fd000000010000000200000460000002b6fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000000004600000011e00ffffff000002580000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="appointments" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="29"/><column index="2" value="67"/><column index="3" value="63"/><column index="4" value="78"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="departments" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="29"/><column index="2" value="124"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="doctors" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="29"/><column index="2" value="148"/><column index="3" value="156"/><column index="4" value="93"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="patients" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="29"/><column index="2" value="109"/><column index="3" value="29"/><column index="4" value="93"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="sqlite_sequence" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="101"/><column index="2" value="29"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1*">-- ===============================
+-- 1) إنشاء الجداول
+-- ===============================
+
+DROP TABLE IF EXISTS appointments;
+DROP TABLE IF EXISTS doctors;
+DROP TABLE IF EXISTS patients;
+DROP TABLE IF EXISTS departments;
+
+CREATE TABLE departments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE doctors (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    specialization TEXT,
+    department_id INTEGER,
+    FOREIGN KEY (department_id) REFERENCES departments(id)
+);
+
+CREATE TABLE patients (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    age INTEGER,
+    phone TEXT
+);
+
+CREATE TABLE appointments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    patient_id INTEGER NOT NULL,
+    doctor_id INTEGER NOT NULL,
+    day TEXT NOT NULL CHECK (day IN 
+        ('Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday')),
+    FOREIGN KEY (patient_id) REFERENCES patients(id),
+    FOREIGN KEY (doctor_id) REFERENCES doctors(id)
+);
+
+-- ===============================
+-- 2) إدخال الأقسام (10)
+-- ===============================
+
+INSERT INTO departments (name) VALUES
+('Cardiology'),
+('Neurology'),
+('Orthopedics'),
+('Pediatrics'),
+('Dermatology'),
+('Psychiatry'),
+('ENT'),
+('Ophthalmology'),
+('Oncology'),
+('General Surgery');
+
+-- ===============================
+-- 3) إدخال الأطباء (70)
+-- ===============================
+
+INSERT INTO doctors (name, specialization, department_id) VALUES
+-- Cardiology
+('Dr. Ahmed Hassan','Heart Specialist',1),
+('Dr. Mona Ali','Heart Specialist',1),
+('Dr. Youssef Omar','Heart Specialist',1),
+('Dr. Sara Mahmoud','Heart Specialist',1),
+('Dr. Khaled Nabil','Heart Specialist',1),
+('Dr. Dina Fathy','Heart Specialist',1),
+('Dr. Amr Salah','Heart Specialist',1),
+
+-- Neurology
+('Dr. Hany Mostafa','Brain Specialist',2),
+('Dr. Nour Adel','Brain Specialist',2),
+('Dr. Tamer Yassin','Brain Specialist',2),
+('Dr. Reem Saeed','Brain Specialist',2),
+('Dr. Karim Fouad','Brain Specialist',2),
+('Dr. Salma Lotfy','Brain Specialist',2),
+('Dr. Bassem Atef','Brain Specialist',2),
+
+-- Orthopedics
+('Dr. Mohamed Shawky','Bones Specialist',3),
+('Dr. Islam Ashraf','Bones Specialist',3),
+('Dr. Rania Adel','Bones Specialist',3),
+('Dr. Wael Saeed','Bones Specialist',3),
+('Dr. Hoda Samir','Bones Specialist',3),
+('Dr. Mostafa Galal','Bones Specialist',3),
+('Dr. Dina Kamal','Bones Specialist',3),
+
+-- Pediatrics
+('Dr. Heba Hassan','Children Specialist',4),
+('Dr. Omar Adel','Children Specialist',4),
+('Dr. Mai Fathy','Children Specialist',4),
+('Dr. Ahmed Samy','Children Specialist',4),
+('Dr. Salma Hussein','Children Specialist',4),
+('Dr. Karim Adel','Children Specialist',4),
+('Dr. Nada Ali','Children Specialist',4),
+
+-- Dermatology
+('Dr. Yara Mostafa','Skin Specialist',5),
+('Dr. Khaled Samir','Skin Specialist',5),
+('Dr. Hossam Nader','Skin Specialist',5),
+('Dr. Reham Adel','Skin Specialist',5),
+('Dr. Islam Youssef','Skin Specialist',5),
+('Dr. Dina Hassan','Skin Specialist',5),
+('Dr. Tarek Ali','Skin Specialist',5),
+
+-- Psychiatry
+('Dr. Hisham Salem','Mental Health',6),
+('Dr. Rasha Fawzy','Mental Health',6),
+('Dr. Karim Magdy','Mental Health',6),
+('Dr. Noha Samir','Mental Health',6),
+('Dr. Adel Hussein','Mental Health',6),
+('Dr. Sara Taha','Mental Health',6),
+('Dr. Mohamed Adel','Mental Health',6),
+
+-- ENT
+('Dr. Mahmoud Saad','ENT Specialist',7),
+('Dr. Lina Hossam','ENT Specialist',7),
+('Dr. Ahmed Nasser','ENT Specialist',7),
+('Dr. Rania Samy','ENT Specialist',7),
+('Dr. Walid Fathy','ENT Specialist',7),
+('Dr. Heba Adel','ENT Specialist',7),
+('Dr. Tamer Said','ENT Specialist',7),
+
+-- Ophthalmology
+('Dr. Sherif Kamal','Eye Specialist',8),
+('Dr. Aya Mahmoud','Eye Specialist',8),
+('Dr. Hatem Youssef','Eye Specialist',8),
+('Dr. Reham Ashraf','Eye Specialist',8),
+('Dr. Islam Samir','Eye Specialist',8),
+('Dr. Nada Fathy','Eye Specialist',8),
+('Dr. Amira Adel','Eye Specialist',8),
+
+-- Oncology
+('Dr. Samer Hassan','Cancer Specialist',9),
+('Dr. Dina Mostafa','Cancer Specialist',9),
+('Dr. Tarek Mahmoud','Cancer Specialist',9),
+('Dr. Rania Nabil','Cancer Specialist',9),
+('Dr. Karim Salah','Cancer Specialist',9),
+('Dr. Heba Galal','Cancer Specialist',9),
+('Dr. Youssef Amin','Cancer Specialist',9),
+
+-- General Surgery
+('Dr. Magdy Fawzy','Surgeon',10),
+('Dr. Ahmed Farouk','Surgeon',10),
+('Dr. Rasha Ali','Surgeon',10),
+('Dr. Mostafa Adel','Surgeon',10),
+('Dr. Dina Samy','Surgeon',10),
+('Dr. Hossam Eid','Surgeon',10),
+('Dr. Salma Kamal','Surgeon',10);
+
+-- ===============================
+-- 4) إدخال المرضى (20)
+-- ===============================
+
+INSERT INTO patients (name, age, phone) VALUES
+('Ali Mohamed',25,'01011111111'),
+('Sara Ahmed',30,'01022222222'),
+('Omar Hassan',40,'01033333333'),
+('Mona Adel',35,'01044444444'),
+('Youssef Kamal',50,'01055555555'),
+('Nada Samir',28,'01066666666'),
+('Karim Fathy',45,'01077777777'),
+('Reem Mostafa',32,'01088888888'),
+('Hossam Ali',60,'01099999999'),
+('Aya Tarek',22,'01111111111'),
+('Mahmoud Salah',55,'01122222222'),
+('Heba Hussein',27,'01133333333'),
+('Islam Adel',38,'01144444444'),
+('Noha Saeed',48,'01155555555'),
+('Tamer Nabil',42,'01166666666'),
+('Dina Farouk',29,'01177777777'),
+('Sherif Kamal',65,'01188888888'),
+('Mai Ashraf',34,'01199999999'),
+('Adel Youssef',58,'01211111111'),
+('Rania Hatem',26,'01222222222');
+
+-- ===============================
+-- 5) إدخال المواعيد (بالأيام)
+-- ===============================
+
+INSERT INTO appointments (patient_id, doctor_id, day) VALUES
+(1,1,'Saturday'),
+(2,1,'Monday'),
+(3,1,'Wednesday'),
+
+(4,8,'Saturday'),
+(5,8,'Monday'),
+(6,8,'Wednesday'),
+
+(7,15,'Saturday'),
+(8,15,'Monday'),
+(9,15,'Wednesday'),
+
+(10,22,'Saturday'),
+(11,22,'Monday'),
+(12,22,'Wednesday'),
+
+(13,30,'Saturday'),
+(14,30,'Monday'),
+(15,30,'Wednesday'),
+
+(16,40,'Saturday'),
+(17,40,'Monday'),
+(18,40,'Wednesday'),
+
+(19,55,'Saturday'),
+(20,55,'Monday');
+</sql><current_tab id="0"/></tab_sql></sqlb_project>
